@@ -130,6 +130,7 @@ class PrepareOrder:
         df_cashier = archivo_cashier.read()
         self.cashiers = self.cashierConverter.convert(df_cashier)
 
+        # Mostrar cajeros
         print("\n------ Cajeros Disponibles ------")
         self.cashierConverter.print(self.cashiers)
 
@@ -138,25 +139,23 @@ class PrepareOrder:
         df_customer = archivo_customer.read()
         self.customers = self.customerConverter.convert(df_customer)
 
+        # Mostrar clientes
         print("\n------ Clientes Disponibles ------")
         self.customerConverter.print(self.customers)
 
-        # Leer y convertir drinks
+        # Leer y convertir drinks, hamburgers, happy meals y sodas
         archivo_drinks = CSVFileManager("data/drinks.csv")
         df_drinks = archivo_drinks.read()
         self.products.extend(self.productConverter.convert(df_drinks, Drink))
 
-        # Leer y convertir hamburgers
         archivo_hamburgers = CSVFileManager("data/hamburgers.csv")
         df_hamburgers = archivo_hamburgers.read()
         self.products.extend(self.productConverter.convert(df_hamburgers, Hamburger))
 
-        # Leer y convertir happy meals
         archivo_happyMeal = CSVFileManager("data/happyMeal.csv")
         df_happyMeal = archivo_happyMeal.read()
         self.products.extend(self.productConverter.convert(df_happyMeal, HappyMeal))
 
-        # Leer y convertir sodas
         archivo_sodas = CSVFileManager("data/sodas.csv")
         df_sodas = archivo_sodas.read()
         self.products.extend(self.productConverter.convert(df_sodas, Soda))
@@ -248,12 +247,8 @@ class PrepareOrder:
 
         order.show()
 
-
-# Programa principal
+# Ejecutar 
 if __name__ == "__main__":
-
     app = PrepareOrder()
-
     app.cargarDatos()
-
     app.prepararOrden()
