@@ -10,7 +10,7 @@ class FoodPackage (ABC):
         pass
     def describe(self):
         return f"Empaque: {self.pack()} , Material: {self.material()}"    
-    
+# Cambiar el return del pack para cada clase por el que sea    
 class Wrapping(FoodPackage):  
   def pack(self):
      return "Food Wrap Paper"

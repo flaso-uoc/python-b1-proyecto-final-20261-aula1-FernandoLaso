@@ -17,7 +17,7 @@ class Product(ABC):
     @abstractmethod
     def foodPackage(self)->FoodPackage:
         pass  
-
+# devolver nombre y clase
 class Hamburger(Product):
     def __init__(self,id:str,name:str,price:float):
         super().__init__(id,name,price)
