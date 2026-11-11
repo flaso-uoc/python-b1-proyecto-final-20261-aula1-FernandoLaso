@@ -102,10 +102,158 @@ f.	Agregar productos: Utilizar la instancia la clase 'Order', del paso c y llama
 
 """
 #Write your code here
+
 from users import *
+from products import *
+from util import *
+from orders import *
 
-    
+
 class PrepareOrder:
- #Write your code here
- pass
 
+    def __init__(self):
+
+        # Inicializar listas vacías para luego
+        self.cashiers = []
+        self.customers = []
+        self.products = []
+
+        # Crear conversores
+        self.cashierConverter = CashierConverter()
+        self.customerConverter = CustomerConverter()
+        self.productConverter = ProductConverter()
+
+    def cargarDatos(self):
+
+        # Leer y convertir cashiers
+        archivo_cashier = CSVFileManager("data/cashiers.csv")
+        df_cashier = archivo_cashier.read()
+        self.cashiers = self.cashierConverter.convert(df_cashier)
+
+        print("\n------ Cajeros Disponibles ------")
+        self.cashierConverter.print(self.cashiers)
+
+        # Leer y convertir customers
+        archivo_customer = CSVFileManager("data/customers.csv")
+        df_customer = archivo_customer.read()
+        self.customers = self.customerConverter.convert(df_customer)
+
+        print("\n------ Clientes Disponibles ------")
+        self.customerConverter.print(self.customers)
+
+        # Leer y convertir drinks
+        archivo_drinks = CSVFileManager("data/drinks.csv")
+        df_drinks = archivo_drinks.read()
+        self.products.extend(self.productConverter.convert(df_drinks, Drink))
+
+        # Leer y convertir hamburgers
+        archivo_hamburgers = CSVFileManager("data/hamburgers.csv")
+        df_hamburgers = archivo_hamburgers.read()
+        self.products.extend(self.productConverter.convert(df_hamburgers, Hamburger))
+
+        # Leer y convertir happy meals
+        archivo_happyMeal = CSVFileManager("data/happyMeal.csv")
+        df_happyMeal = archivo_happyMeal.read()
+        self.products.extend(self.productConverter.convert(df_happyMeal, HappyMeal))
+
+        # Leer y convertir sodas
+        archivo_sodas = CSVFileManager("data/sodas.csv")
+        df_sodas = archivo_sodas.read()
+        self.products.extend(self.productConverter.convert(df_sodas, Soda))
+
+    # Buscar cajero por DNI
+    def encontrarCashier(self, dni):
+
+        for cashier in self.cashiers:
+            if str(cashier.dni) == str(dni):
+                return cashier
+
+        return None
+
+    # Buscar cliente por DNI
+    def encontrarCustomer(self, dni):
+
+        for customer in self.customers:
+            if str(customer.dni) == str(dni):
+                return customer
+
+        return None
+
+    # Mostrar productos disponibles
+    def mostrarProductos(self):
+
+        for product in self.products:
+            print(product.describe())
+
+    # Seleccionar productos y añadirlos a la orden
+    def seleccionarProductos(self, order):
+
+        while True:
+
+            product_id = input("Introduce ID del producto\n(0 para terminar): ")
+
+            if product_id == "0":
+                break
+
+            encontrado = False
+
+            for product in self.products:
+
+                if str(product.id) == str(product_id):
+
+                    order.add(product)
+
+                    print("Producto añadido")
+
+                    encontrado = True
+                    break
+
+            if not encontrado:
+                print("Producto no encontrado")
+
+    # Preparar una nueva orden
+    def prepararOrden(self):
+
+        # Buscar cajero
+        dniCashier = input("Introduce DNI del cajero: ")
+
+        cashier = self.encontrarCashier(dniCashier)
+
+        if cashier is None:
+            print("Cajero no encontrado")
+            return
+
+        # Buscar cliente
+        dniCustomer = input("Introduce DNI del cliente: ")
+
+        customer = self.encontrarCustomer(dniCustomer)
+
+        if customer is None:
+            print("Cliente no encontrado")
+            return
+
+        # Crear orden
+        order = Order(cashier, customer)
+
+        # Mostrar productos
+        print("\n------ Productos Disponibles ------")
+
+        self.mostrarProductos()
+
+        # Seleccionar productos
+        self.seleccionarProductos(order)
+
+        # Mostrar orden
+        print("\n------ Orden Final ------")
+
+        order.show()
+
+
+# Programa principal
+if __name__ == "__main__":
+
+    app = PrepareOrder()
+
+    app.cargarDatos()
+
+    app.prepararOrden()
